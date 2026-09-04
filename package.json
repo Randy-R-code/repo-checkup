@@ -1,0 +1,45 @@
+{
+  "name": "repo-checkup",
+  "version": "0.1.0",
+  "description": "A zero-config CLI that checks JavaScript and TypeScript repositories for configuration, tooling, testing, CI, and project health.",
+  "type": "module",
+  "bin": {
+    "repo-checkup": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "cli",
+    "javascript",
+    "typescript",
+    "repository",
+    "repository-health",
+    "developer-tools",
+    "ci",
+    "testing"
+  ],
+  "license": "MIT",
+  "packageManager": "pnpm@10.33.0",
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "tsdown": "^0.23.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
+  },
+  "dependencies": {
+    "cac": "^7.0.0",
+    "picocolors": "^1.1.1"
+  }
+}
