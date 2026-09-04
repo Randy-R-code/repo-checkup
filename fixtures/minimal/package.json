@@ -1,0 +1,13 @@
+{
+  "name": "minimal-fixture",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "cac": "^7.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
