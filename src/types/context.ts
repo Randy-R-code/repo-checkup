@@ -1,4 +1,5 @@
 import type { PackageJson } from "../parsers/package-json.js";
+import type { TsConfig } from "../parsers/tsconfig.js";
 import type { PackageManager } from "./package-manager.js";
 import type { ProjectProfile } from "./profile.js";
 
@@ -20,4 +21,6 @@ export interface RepositoryContext {
   lockfiles: LockfileName[];
   profile: ProjectProfile;
   packageManager: PackageManager;
+  hasTsconfig: boolean;
+  tsconfig: TsConfig | undefined;
 }

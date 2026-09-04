@@ -10,6 +10,9 @@ importers:
       cac:
         specifier: ^7.0.0
         version: 7.0.0
+      jsonc-parser:
+        specifier: ^3.3.1
+        version: 3.3.1
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
@@ -997,6 +1000,12 @@ packages:
       }
     engines: { node: ^22.18.0 || >=24.0.0 }
 
+  jsonc-parser@3.3.1:
+    resolution:
+      {
+        integrity: sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==,
+      }
+
   lightningcss-android-arm64@1.33.0:
     resolution:
       {
@@ -1802,6 +1811,8 @@ snapshots:
   hookable@6.1.1: {}
 
   import-without-cache@0.4.0: {}
+
+  jsonc-parser@3.3.1: {}
 
   lightningcss-android-arm64@1.33.0:
     optional: true

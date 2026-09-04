@@ -3,11 +3,13 @@ import path from "node:path";
 import { detectPackageManager } from "../detectors/package-manager.js";
 import { detectProjectProfile } from "../detectors/profile.js";
 import { readPackageJson } from "../parsers/package-json.js";
+import { readTsConfig } from "../parsers/tsconfig.js";
 import {
   LOCKFILES,
   type LockfileName,
   type RepositoryContext,
 } from "../types/context.js";
+import { fileExists } from "../utils/fs.js";
 
 export async function buildRepositoryContext(
   targetPath: string,
@@ -25,6 +27,10 @@ export async function buildRepositoryContext(
     ...packageJson?.dependencies,
     ...packageJson?.devDependencies,
   };
+  const hasTsconfig = await fileExists(
+    path.join(resolvedPath, "tsconfig.json"),
+  );
+  const tsconfig = await readTsConfig(resolvedPath);
 
   return {
     targetPath: resolvedPath,
@@ -37,6 +43,8 @@ export async function buildRepositoryContext(
       packageJson?.packageManager,
       lockfiles,
     ),
+    hasTsconfig,
+    tsconfig,
   };
 }
 
@@ -48,13 +56,4 @@ async function findLockfiles(targetPath: string): Promise<LockfileName[]> {
   );
 
   return found.filter((name): name is LockfileName => name !== undefined);
-}
-
-async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await stat(filePath);
-    return true;
-  } catch {
-    return false;
-  }
 }

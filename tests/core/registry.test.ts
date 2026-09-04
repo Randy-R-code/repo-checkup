@@ -1,19 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { runChecks } from "../../src/core/registry.js";
 import type { Check } from "../../src/types/check.js";
-import type { RepositoryContext } from "../../src/types/context.js";
-
-function createContext(): RepositoryContext {
-  return {
-    targetPath: "/repo",
-    packageJson: undefined,
-    scripts: {},
-    dependencies: {},
-    lockfiles: [],
-    profile: "generic",
-    packageManager: "unknown",
-  };
-}
+import { createContext } from "../helpers/context.js";
 
 describe("runChecks", () => {
   it("only runs checks whose applies() returns true", () => {

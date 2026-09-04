@@ -6,23 +6,8 @@ import {
   packageManagerFieldConsistency,
   projectChecks,
 } from "../../../src/checks/project/index.js";
-import type { RepositoryContext } from "../../../src/types/context.js";
+import { createContext } from "../../helpers/context.js";
 import { createPackageJson } from "../../helpers/package-json.js";
-
-function createContext(
-  overrides: Partial<RepositoryContext> = {},
-): RepositoryContext {
-  return {
-    targetPath: "/repo",
-    packageJson: undefined,
-    scripts: {},
-    dependencies: {},
-    lockfiles: [],
-    profile: "generic",
-    packageManager: "unknown",
-    ...overrides,
-  };
-}
 
 describe("packageJsonFound", () => {
   it("passes when package.json was read", () => {

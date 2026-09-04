@@ -21,6 +21,18 @@ describe("buildRepositoryContext", () => {
     expect(context.lockfiles).toEqual([]);
     expect(context.profile).toBe("generic");
     expect(context.packageManager).toBe("unknown");
+    expect(context.hasTsconfig).toBe(false);
+    expect(context.tsconfig).toBeUndefined();
+  });
+
+  it("reads and parses tsconfig.json when present", async () => {
+    const context = await buildRepositoryContext(
+      path.join(fixturesDir, "typescript-project"),
+    );
+
+    expect(context.hasTsconfig).toBe(true);
+    expect(context.tsconfig?.compilerOptions.strict).toBe(true);
+    expect(context.tsconfig?.include).toEqual(["src"]);
   });
 
   it("detects present lockfiles and the matching package manager", async () => {
