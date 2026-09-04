@@ -1,6 +1,6 @@
 {
   "name": "repo-checkup",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A zero-config CLI that checks JavaScript and TypeScript repositories for configuration, tooling, testing, CI, and project health.",
   "type": "module",
   "bin": {

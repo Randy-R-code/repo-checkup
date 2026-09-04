@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import cac from "cac";
+import { realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { analyze } from "./core/analyzer.js";
 import { createJsonReport } from "./reporters/json.js";
 import { renderTerminalReport } from "./reporters/terminal.js";
@@ -8,7 +10,7 @@ import { CATEGORIES, type Category } from "./types/category.js";
 export function getCliMeta() {
   return {
     name: "RepoCheckup",
-    version: "0.1.0",
+    version: "0.1.1",
     tagline: "Give your JavaScript or TypeScript repository a quick checkup.",
   };
 }
@@ -93,6 +95,26 @@ function run() {
   cli.parse();
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// A plain string/URL comparison breaks whenever the entry point is reached
+// through a symlink (e.g. npm's node_modules/.bin/repo-checkup) or an
+// OS-normalized path (e.g. macOS resolving /tmp to /private/tmp):
+// import.meta.url follows those to the real file, argv[1] does not.
+// realpathSync on both sides makes the comparison symlink-safe.
+export function isMainModule(
+  moduleUrl: string,
+  argv1: string | undefined,
+): boolean {
+  if (argv1 === undefined) {
+    return false;
+  }
+
+  try {
+    return realpathSync(fileURLToPath(moduleUrl)) === realpathSync(argv1);
+  } catch {
+    return false;
+  }
+}
+
+if (isMainModule(import.meta.url, process.argv[1])) {
   run();
 }
