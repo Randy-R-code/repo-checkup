@@ -5,6 +5,8 @@ export function detectDetectedTools(context: RepositoryContext): string[] {
 
   if (context.testing.vitest.installed) tools.push("vitest");
   if (context.testing.jest.installed) tools.push("jest");
+  if (context.testing.ava.installed) tools.push("ava");
+  if (context.testing.mocha.installed) tools.push("mocha");
   if (context.testing.playwright.installed) tools.push("playwright");
   if (context.testing.cypress.installed) tools.push("cypress");
 

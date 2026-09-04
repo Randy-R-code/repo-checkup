@@ -3,7 +3,12 @@ import type { RepositoryContext } from "../../types/context.js";
 import { createResult } from "../helpers.js";
 
 function hasUnitTestRunner(context: RepositoryContext): boolean {
-  return context.testing.vitest.installed || context.testing.jest.installed;
+  return (
+    context.testing.vitest.installed ||
+    context.testing.jest.installed ||
+    context.testing.ava.installed ||
+    context.testing.mocha.installed
+  );
 }
 
 export const testRunnerDetected: Check = {
@@ -17,7 +22,7 @@ export const testRunnerDetected: Check = {
       return createResult(
         testRunnerDetected,
         "warning",
-        "Neither Vitest nor Jest was found as a dependency.",
+        "No known test runner (Vitest, Jest, AVA, or Mocha) was found as a dependency.",
         "Add a test runner such as Vitest so the project's behavior can be verified automatically.",
       );
     }

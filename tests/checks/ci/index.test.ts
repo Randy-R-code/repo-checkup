@@ -165,6 +165,75 @@ describe("buildInCi", () => {
   });
 });
 
+describe("compound script resolution (real-world regressions)", () => {
+  it("passes when CI runs each piece of a compound test script separately (execa)", () => {
+    // "test": "npm run lint && npm run unit && npm run type", CI runs
+    // `npm run lint`, `npm run unit`, and `npm run type` as separate steps
+    // rather than `npm test`.
+    const context = createContext({
+      scripts: {
+        test: "npm run lint && npm run unit && npm run type",
+        lint: "eslint .",
+        unit: "node --test",
+        type: "tsc --noEmit",
+      },
+      githubActionsWorkflows: [
+        createWorkflow({
+          jobs: {
+            test: {
+              steps: [
+                { run: "npm run lint", uses: undefined },
+                { run: "npm run type", uses: undefined },
+                { run: "npm run unit", uses: undefined },
+              ],
+            },
+          },
+        }),
+      ],
+    });
+
+    expect(testsInCi.run(context).status).toBe("pass");
+  });
+
+  it("does not pass when only some pieces of a compound script run in CI", () => {
+    const context = createContext({
+      scripts: {
+        test: "npm run lint && npm run unit",
+        lint: "eslint .",
+        unit: "node --test",
+      },
+      githubActionsWorkflows: [
+        createWorkflow({
+          jobs: {
+            test: { steps: [{ run: "npm run lint", uses: undefined }] },
+          },
+        }),
+      ],
+    });
+
+    expect(testsInCi.run(context).status).toBe("error");
+  });
+
+  it("passes when CI runs a wrapper script that itself invokes the target (ky)", () => {
+    // "test": "xo && npm run build && ava", CI only runs `npm test`.
+    const context = createContext({
+      scripts: {
+        test: "xo && npm run build && ava",
+        build: "tsc --project tsconfig.dist.json",
+      },
+      githubActionsWorkflows: [
+        createWorkflow({
+          jobs: {
+            test: { steps: [{ run: "npm test", uses: undefined }] },
+          },
+        }),
+      ],
+    });
+
+    expect(buildInCi.run(context).status).toBe("pass");
+  });
+});
+
 describe("ciChecks", () => {
   it("exposes every ci check", () => {
     expect(ciChecks).toHaveLength(5);

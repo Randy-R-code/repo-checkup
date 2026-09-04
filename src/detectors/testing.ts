@@ -13,7 +13,15 @@ const IGNORE = [
   "**/.output/**",
 ];
 
-const TEST_FILE_PATTERNS = ["**/*.{test,spec}.{js,jsx,ts,tsx}"];
+const TEST_FILE_PATTERNS = [
+  "**/*.{test,spec}.{js,jsx,ts,tsx}",
+  // AVA, Mocha, and Node's own test runner conventionally place plain
+  // (unsuffixed) test files under a test/tests/__tests__ directory instead
+  // of naming each file *.test.*.
+  "test/**/*.{js,jsx,ts,tsx}",
+  "tests/**/*.{js,jsx,ts,tsx}",
+  "__tests__/**/*.{js,jsx,ts,tsx}",
+];
 
 const E2E_FILE_PATTERNS = [
   "e2e/**/*.{js,jsx,ts,tsx}",
@@ -50,6 +58,8 @@ export async function detectTesting(
   return {
     vitest: { installed: "vitest" in dependencies },
     jest: { installed: "jest" in dependencies },
+    ava: { installed: "ava" in dependencies },
+    mocha: { installed: "mocha" in dependencies },
     playwright: {
       installed:
         "@playwright/test" in dependencies || "playwright" in dependencies,

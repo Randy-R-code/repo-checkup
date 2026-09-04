@@ -27,6 +27,8 @@ const CATEGORY_LABELS: Record<Category, string> = {
 const TOOL_LABELS: Record<string, string> = {
   vitest: "Vitest",
   jest: "Jest",
+  ava: "AVA",
+  mocha: "Mocha",
   playwright: "Playwright",
   cypress: "Cypress",
   eslint: "ESLint",

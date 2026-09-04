@@ -12,6 +12,8 @@ describe("detectDetectedTools", () => {
       testing: {
         vitest: { installed: true },
         jest: { installed: false },
+        ava: { installed: false },
+        mocha: { installed: false },
         playwright: { installed: true },
         cypress: { installed: false },
         hasTestFiles: true,

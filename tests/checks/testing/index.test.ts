@@ -18,6 +18,8 @@ describe("testRunnerDetected", () => {
       testing: {
         vitest: { installed: true },
         jest: { installed: false },
+        ava: { installed: false },
+        mocha: { installed: false },
         playwright: { installed: false },
         cypress: { installed: false },
         hasTestFiles: false,
@@ -33,6 +35,8 @@ describe("testScript", () => {
   const withVitest = {
     vitest: { installed: true },
     jest: { installed: false },
+    ava: { installed: false },
+    mocha: { installed: false },
     playwright: { installed: false },
     cypress: { installed: false },
     hasTestFiles: false,
@@ -65,6 +69,8 @@ describe("testFilesPresent", () => {
       testing: {
         vitest: { installed: true },
         jest: { installed: false },
+        ava: { installed: false },
+        mocha: { installed: false },
         playwright: { installed: false },
         cypress: { installed: false },
         hasTestFiles: false,
@@ -80,6 +86,8 @@ describe("testFilesPresent", () => {
       testing: {
         vitest: { installed: true },
         jest: { installed: false },
+        ava: { installed: false },
+        mocha: { installed: false },
         playwright: { installed: false },
         cypress: { installed: false },
         hasTestFiles: true,
@@ -101,6 +109,8 @@ describe("e2eTestsPresent", () => {
       testing: {
         vitest: { installed: false },
         jest: { installed: false },
+        ava: { installed: false },
+        mocha: { installed: false },
         playwright: { installed: true },
         cypress: { installed: false },
         hasTestFiles: false,
@@ -116,6 +126,8 @@ describe("e2eTestsPresent", () => {
       testing: {
         vitest: { installed: false },
         jest: { installed: false },
+        ava: { installed: false },
+        mocha: { installed: false },
         playwright: { installed: true },
         cypress: { installed: false },
         hasTestFiles: false,

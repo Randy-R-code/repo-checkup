@@ -21,6 +21,8 @@ export function createContext(
     testing: {
       vitest: { installed: false },
       jest: { installed: false },
+      ava: { installed: false },
+      mocha: { installed: false },
       playwright: { installed: false },
       cypress: { installed: false },
       hasTestFiles: false,

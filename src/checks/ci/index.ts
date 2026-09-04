@@ -4,8 +4,8 @@ import { createResult } from "../helpers.js";
 
 const PACKAGE_MANAGER_BINARIES = ["npm", "pnpm", "yarn", "bun"];
 
-function isScriptInvokedInCi(
-  context: RepositoryContext,
+function scriptCommandReferences(
+  commandOrScriptValue: string,
   scriptName: string,
 ): boolean {
   const patterns = PACKAGE_MANAGER_BINARIES.flatMap((pm) => [
@@ -13,14 +13,70 @@ function isScriptInvokedInCi(
     `${pm} ${scriptName}`,
   ]);
 
+  return patterns.some((pattern) => commandOrScriptValue.includes(pattern));
+}
+
+function isScriptDirectlyInvokedInCi(
+  context: RepositoryContext,
+  scriptName: string,
+): boolean {
   return context.githubActionsWorkflows.some((workflow) =>
     Object.values(workflow.jobs).some((job) =>
       job.steps.some(
         (step) =>
           step.run !== undefined &&
-          patterns.some((pattern) => step.run?.includes(pattern)),
+          scriptCommandReferences(step.run, scriptName),
       ),
     ),
+  );
+}
+
+/**
+ * A script counts as run in CI not just when a step invokes it directly,
+ * but also when:
+ * - a CI-invoked "wrapper" script's own command references it
+ *   (e.g. CI runs `npm test`, and "test" is "npm run build && ava"), or
+ * - the script is itself a wrapper whose referenced sub-scripts are each
+ *   invoked as separate CI steps
+ *   (e.g. "test" is "npm run lint && npm run unit", and CI runs
+ *   `npm run lint` and `npm run unit` as separate steps rather than `npm test`).
+ * Real-world packages commonly split "test" this way in both directions.
+ */
+function isScriptEffectivelyRunInCi(
+  context: RepositoryContext,
+  scriptName: string,
+): boolean {
+  if (isScriptDirectlyInvokedInCi(context, scriptName)) {
+    return true;
+  }
+
+  const invokedByWrapperScript = Object.entries(context.scripts).some(
+    ([otherName, otherValue]) =>
+      otherName !== scriptName &&
+      scriptCommandReferences(otherValue, scriptName) &&
+      isScriptDirectlyInvokedInCi(context, otherName),
+  );
+
+  if (invokedByWrapperScript) {
+    return true;
+  }
+
+  const targetValue = context.scripts[scriptName];
+  if (targetValue === undefined) {
+    return false;
+  }
+
+  const referencedSubScripts = Object.keys(context.scripts).filter(
+    (otherName) =>
+      otherName !== scriptName &&
+      scriptCommandReferences(targetValue, otherName),
+  );
+
+  return (
+    referencedSubScripts.length > 0 &&
+    referencedSubScripts.every((otherName) =>
+      isScriptDirectlyInvokedInCi(context, otherName),
+    )
   );
 }
 
@@ -86,7 +142,7 @@ export const testsInCi: Check = {
     context.githubActionsWorkflows.length > 0 &&
     context.scripts.test !== undefined,
   run: (context) => {
-    if (!isScriptInvokedInCi(context, "test")) {
+    if (!isScriptEffectivelyRunInCi(context, "test")) {
       return createResult(
         testsInCi,
         "error",
@@ -110,7 +166,7 @@ export const typecheckInCi: Check = {
   run: (context) => {
     const script = findScriptByContent(context.scripts, "tsc");
 
-    if (script !== undefined && !isScriptInvokedInCi(context, script)) {
+    if (script !== undefined && !isScriptEffectivelyRunInCi(context, script)) {
       return createResult(
         typecheckInCi,
         "warning",
@@ -132,7 +188,7 @@ export const buildInCi: Check = {
     context.githubActionsWorkflows.length > 0 &&
     context.scripts.build !== undefined,
   run: (context) => {
-    if (!isScriptInvokedInCi(context, "build")) {
+    if (!isScriptEffectivelyRunInCi(context, "build")) {
       return createResult(
         buildInCi,
         "warning",

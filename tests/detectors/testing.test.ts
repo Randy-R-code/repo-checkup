@@ -28,10 +28,29 @@ describe("detectTesting", () => {
     expect(testing.playwright.installed).toBe(true);
   });
 
+  it("detects AVA and Mocha as test runners (regression: real-world false negative)", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-testing-"));
+
+    const testing = await detectTesting(dir, { ava: "^6.0.0" });
+
+    expect(testing.ava.installed).toBe(true);
+    expect(testing.mocha.installed).toBe(false);
+  });
+
   it("finds unit test files by naming convention", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-testing-"));
     await mkdir(path.join(dir, "src"), { recursive: true });
     await writeFile(path.join(dir, "src", "add.test.ts"), "export {}", "utf8");
+
+    const testing = await detectTesting(dir, {});
+
+    expect(testing.hasTestFiles).toBe(true);
+  });
+
+  it("finds unsuffixed test files under a test/ directory (regression: AVA convention)", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-testing-"));
+    await mkdir(path.join(dir, "test"), { recursive: true });
+    await writeFile(path.join(dir, "test", "main.js"), "export {}", "utf8");
 
     const testing = await detectTesting(dir, {});
 
