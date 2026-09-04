@@ -30,6 +30,14 @@
     "testing"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Randy-R-code/repo-checkup.git"
+  },
+  "homepage": "https://github.com/Randy-R-code/repo-checkup#readme",
+  "bugs": {
+    "url": "https://github.com/Randy-R-code/repo-checkup/issues"
+  },
   "packageManager": "pnpm@10.33.0",
   "devDependencies": {
     "@types/node": "^26.4.1",
