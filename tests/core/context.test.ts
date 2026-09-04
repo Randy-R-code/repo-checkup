@@ -64,6 +64,15 @@ describe("buildRepositoryContext", () => {
     expect(context.testing.hasTestFiles).toBe(true);
   });
 
+  it("reads GitHub Actions workflows and their pull_request trigger", async () => {
+    const context = await buildRepositoryContext(
+      path.join(fixturesDir, "github-actions-project"),
+    );
+
+    expect(context.githubActionsWorkflows).toHaveLength(1);
+    expect(context.githubActionsWorkflows[0]?.triggersOnPullRequest).toBe(true);
+  });
+
   it("detects a Node.js CLI profile from the bin field", async () => {
     const context = await buildRepositoryContext(
       path.join(fixturesDir, "node-cli-package"),

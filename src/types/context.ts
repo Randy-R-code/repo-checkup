@@ -1,3 +1,4 @@
+import type { Workflow } from "../parsers/github-actions.js";
 import type { PackageJson } from "../parsers/package-json.js";
 import type { TsConfig } from "../parsers/tsconfig.js";
 import type { PackageManager } from "./package-manager.js";
@@ -27,4 +28,5 @@ export interface RepositoryContext {
   tsconfig: TsConfig | undefined;
   tooling: ToolingEvidence;
   testing: TestingEvidence;
+  githubActionsWorkflows: Workflow[];
 }

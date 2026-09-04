@@ -26,6 +26,7 @@ export function createContext(
       hasTestFiles: false,
       hasE2eTestFiles: false,
     },
+    githubActionsWorkflows: [],
     ...overrides,
   };
 }

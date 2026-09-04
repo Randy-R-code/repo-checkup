@@ -4,6 +4,7 @@ import { detectPackageManager } from "../detectors/package-manager.js";
 import { detectProjectProfile } from "../detectors/profile.js";
 import { detectTesting } from "../detectors/testing.js";
 import { detectTooling } from "../detectors/tooling.js";
+import { readWorkflows } from "../parsers/github-actions.js";
 import { readPackageJson } from "../parsers/package-json.js";
 import { readTsConfig } from "../parsers/tsconfig.js";
 import {
@@ -35,6 +36,7 @@ export async function buildRepositoryContext(
   const tsconfig = await readTsConfig(resolvedPath);
   const tooling = await detectTooling(resolvedPath, dependencies);
   const testing = await detectTesting(resolvedPath, dependencies);
+  const githubActionsWorkflows = await readWorkflows(resolvedPath);
 
   return {
     targetPath: resolvedPath,
@@ -51,6 +53,7 @@ export async function buildRepositoryContext(
     tsconfig,
     tooling,
     testing,
+    githubActionsWorkflows,
   };
 }
 
