@@ -2,6 +2,7 @@ import type { PackageJson } from "../parsers/package-json.js";
 import type { TsConfig } from "../parsers/tsconfig.js";
 import type { PackageManager } from "./package-manager.js";
 import type { ProjectProfile } from "./profile.js";
+import type { ToolingEvidence } from "./tooling.js";
 
 export const LOCKFILES = [
   "pnpm-lock.yaml",
@@ -23,4 +24,5 @@ export interface RepositoryContext {
   packageManager: PackageManager;
   hasTsconfig: boolean;
   tsconfig: TsConfig | undefined;
+  tooling: ToolingEvidence;
 }

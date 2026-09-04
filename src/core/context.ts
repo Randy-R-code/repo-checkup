@@ -2,6 +2,7 @@ import { stat } from "node:fs/promises";
 import path from "node:path";
 import { detectPackageManager } from "../detectors/package-manager.js";
 import { detectProjectProfile } from "../detectors/profile.js";
+import { detectTooling } from "../detectors/tooling.js";
 import { readPackageJson } from "../parsers/package-json.js";
 import { readTsConfig } from "../parsers/tsconfig.js";
 import {
@@ -31,6 +32,7 @@ export async function buildRepositoryContext(
     path.join(resolvedPath, "tsconfig.json"),
   );
   const tsconfig = await readTsConfig(resolvedPath);
+  const tooling = await detectTooling(resolvedPath, dependencies);
 
   return {
     targetPath: resolvedPath,
@@ -45,6 +47,7 @@ export async function buildRepositoryContext(
     ),
     hasTsconfig,
     tsconfig,
+    tooling,
   };
 }
 

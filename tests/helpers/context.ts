@@ -13,6 +13,11 @@ export function createContext(
     packageManager: "unknown",
     hasTsconfig: false,
     tsconfig: undefined,
+    tooling: {
+      eslint: { installed: false, configured: false },
+      biome: { installed: false, configured: false },
+      prettier: { installed: false, configured: false },
+    },
     ...overrides,
   };
 }

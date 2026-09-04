@@ -44,6 +44,17 @@ describe("buildRepositoryContext", () => {
     expect(context.packageManager).toBe("pnpm");
   });
 
+  it("detects an installed and configured tool", async () => {
+    const context = await buildRepositoryContext(
+      path.join(fixturesDir, "biome-project"),
+    );
+
+    expect(context.tooling.biome).toEqual({
+      installed: true,
+      configured: true,
+    });
+  });
+
   it("detects a Node.js CLI profile from the bin field", async () => {
     const context = await buildRepositoryContext(
       path.join(fixturesDir, "node-cli-package"),
