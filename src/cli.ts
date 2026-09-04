@@ -14,6 +14,7 @@ export function getCliMeta() {
 
 interface CliOptions {
   json?: boolean;
+  ci?: boolean;
 }
 
 async function runScan(targetPath: string, options: CliOptions) {
@@ -36,10 +37,13 @@ async function runScan(targetPath: string, options: CliOptions) {
     console.log(
       JSON.stringify(createJsonReport(analysis, meta.version), null, 2),
     );
-    return;
+  } else {
+    console.log(renderTerminalReport(analysis));
   }
 
-  console.log(renderTerminalReport(analysis));
+  if (options.ci && analysis.summary.errors > 0) {
+    process.exitCode = 1;
+  }
 }
 
 function run() {
@@ -49,6 +53,10 @@ function run() {
   cli
     .command("[path]", "Check a JavaScript/TypeScript repository")
     .option("--json", "Output the report as JSON")
+    .option(
+      "--ci",
+      "Use a deterministic exit code (1) when any check reports an error",
+    )
     .action((path: string | undefined, options: CliOptions) =>
       runScan(path ?? ".", options),
     );
