@@ -16,6 +16,7 @@ describe("runChecks", () => {
         category: "project",
         status: "pass",
         title: "A",
+        weight: 1,
         message: undefined,
         recommendation: undefined,
       }),

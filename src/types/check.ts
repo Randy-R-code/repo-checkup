@@ -8,6 +8,7 @@ export interface CheckResult {
   category: Category;
   status: CheckStatus;
   title: string;
+  weight: number;
   message: string | undefined;
   recommendation: string | undefined;
 }
