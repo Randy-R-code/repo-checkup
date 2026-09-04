@@ -35,8 +35,17 @@ const TOOL_LABELS: Record<string, string> = {
   "github-actions": "GitHub Actions",
 };
 
-export function renderTerminalReport(analysis: AnalysisResult): string {
+export interface TerminalReportOptions {
+  verbose: boolean | undefined;
+  showScore: boolean | undefined;
+}
+
+export function renderTerminalReport(
+  analysis: AnalysisResult,
+  options: TerminalReportOptions = { verbose: undefined, showScore: undefined },
+): string {
   const { context, results, summary } = analysis;
+  const showScore = options.showScore ?? true;
   const lines: string[] = [];
 
   lines.push(pc.bold("RepoCheckup"));
@@ -51,15 +60,19 @@ export function renderTerminalReport(analysis: AnalysisResult): string {
   lines.push(...renderCategoryCounts(results));
   lines.push("");
 
-  const issues = results.filter(
-    (result) => result.status === "warning" || result.status === "error",
-  );
+  if (options.verbose) {
+    lines.push(...renderAllResults(results));
+  } else {
+    const issues = results.filter(
+      (result) => result.status === "warning" || result.status === "error",
+    );
 
-  if (issues.length > 0) {
-    lines.push("Issues");
-    lines.push("");
-    for (const issue of issues) {
-      lines.push(...renderIssue(issue));
+    if (issues.length > 0) {
+      lines.push("Issues");
+      lines.push("");
+      for (const issue of issues) {
+        lines.push(...renderIssue(issue));
+      }
     }
   }
 
@@ -67,8 +80,11 @@ export function renderTerminalReport(analysis: AnalysisResult): string {
   lines.push(
     `${pc.green("✓")} ${summary.passed} passed  ${pc.yellow("!")} ${summary.warnings} recommendations  ${pc.red("✗")} ${summary.errors} issues`,
   );
-  lines.push("");
-  lines.push(`Health ${summary.score}/100`);
+
+  if (showScore) {
+    lines.push("");
+    lines.push(`Health ${summary.score}/100`);
+  }
 
   return lines.join("\n");
 }
@@ -108,6 +124,31 @@ function renderCategoryCounts(results: CheckResult[]): string[] {
       `${CATEGORY_LABELS[category].padEnd(14)} ${passed}/${inCategory.length}`,
     );
   }
+
+  return lines;
+}
+
+function renderAllResults(results: CheckResult[]): string[] {
+  const scored = results.filter((result) => result.status !== "skipped");
+
+  if (scored.length === 0) {
+    return [];
+  }
+
+  const lines = ["All checks", ""];
+
+  for (const result of scored) {
+    const symbol =
+      result.status === "pass"
+        ? pc.green("✓")
+        : result.status === "error"
+          ? pc.red("✗")
+          : pc.yellow("!");
+
+    lines.push(`${symbol} ${result.title}`);
+  }
+
+  lines.push("");
 
   return lines;
 }

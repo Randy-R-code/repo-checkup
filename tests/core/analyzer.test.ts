@@ -42,4 +42,16 @@ describe("analyze", () => {
     expect(ciResults).toHaveLength(1);
     expect(ciResults[0]?.id).toBe("ci/workflows-found");
   });
+
+  it("restricts results and the score to a single category", async () => {
+    const target = path.join(fixturesDir, "minimal");
+    const full = await analyze(target);
+    const scoped = await analyze(target, { category: "typescript" });
+
+    expect(
+      scoped.results.every((result) => result.category === "typescript"),
+    ).toBe(true);
+    expect(scoped.results.length).toBeLessThan(full.results.length);
+    expect(scoped.results.length).toBeGreaterThan(0);
+  });
 });

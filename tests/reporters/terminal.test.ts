@@ -89,4 +89,33 @@ describe("renderTerminalReport", () => {
 
     expect(output).not.toContain("Issues");
   });
+
+  it("lists every result under verbose, including passes", () => {
+    const pass: CheckResult = {
+      id: "project/package-json-found",
+      category: "project",
+      status: "pass",
+      title: "package.json is present and valid",
+      weight: 5,
+      message: undefined,
+      recommendation: undefined,
+    };
+
+    const output = renderTerminalReport(createAnalysis({ results: [pass] }), {
+      verbose: true,
+      showScore: undefined,
+    });
+
+    expect(output).toContain("All checks");
+    expect(output).toContain("package.json is present and valid");
+  });
+
+  it("hides the health score when showScore is false", () => {
+    const output = renderTerminalReport(createAnalysis(), {
+      verbose: undefined,
+      showScore: false,
+    });
+
+    expect(output).not.toContain("Health");
+  });
 });
