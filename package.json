@@ -11,13 +11,13 @@
   ],
   "scripts": {
     "dev": "tsx src/cli.ts",
-    "build": "tsdown",
+    "build": "tsdown --config-loader native",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "keywords": [
     "cli",
