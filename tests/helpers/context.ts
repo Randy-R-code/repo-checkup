@@ -18,6 +18,14 @@ export function createContext(
       biome: { installed: false, configured: false },
       prettier: { installed: false, configured: false },
     },
+    testing: {
+      vitest: { installed: false },
+      jest: { installed: false },
+      playwright: { installed: false },
+      cypress: { installed: false },
+      hasTestFiles: false,
+      hasE2eTestFiles: false,
+    },
     ...overrides,
   };
 }

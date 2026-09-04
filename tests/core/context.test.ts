@@ -55,6 +55,15 @@ describe("buildRepositoryContext", () => {
     });
   });
 
+  it("detects an installed test runner and its test files", async () => {
+    const context = await buildRepositoryContext(
+      path.join(fixturesDir, "vitest-project"),
+    );
+
+    expect(context.testing.vitest.installed).toBe(true);
+    expect(context.testing.hasTestFiles).toBe(true);
+  });
+
   it("detects a Node.js CLI profile from the bin field", async () => {
     const context = await buildRepositoryContext(
       path.join(fixturesDir, "node-cli-package"),

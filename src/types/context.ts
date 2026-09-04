@@ -2,6 +2,7 @@ import type { PackageJson } from "../parsers/package-json.js";
 import type { TsConfig } from "../parsers/tsconfig.js";
 import type { PackageManager } from "./package-manager.js";
 import type { ProjectProfile } from "./profile.js";
+import type { TestingEvidence } from "./testing.js";
 import type { ToolingEvidence } from "./tooling.js";
 
 export const LOCKFILES = [
@@ -25,4 +26,5 @@ export interface RepositoryContext {
   hasTsconfig: boolean;
   tsconfig: TsConfig | undefined;
   tooling: ToolingEvidence;
+  testing: TestingEvidence;
 }
