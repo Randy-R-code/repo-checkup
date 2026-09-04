@@ -1,4 +1,5 @@
 import type { PackageJson } from "../parsers/package-json.js";
+import type { PackageManager } from "./package-manager.js";
 import type { ProjectProfile } from "./profile.js";
 
 export const LOCKFILES = [
@@ -18,4 +19,5 @@ export interface RepositoryContext {
   dependencies: Record<string, string>;
   lockfiles: LockfileName[];
   profile: ProjectProfile;
+  packageManager: PackageManager;
 }

@@ -1,5 +1,6 @@
 import { stat } from "node:fs/promises";
 import path from "node:path";
+import { detectPackageManager } from "../detectors/package-manager.js";
 import { detectProjectProfile } from "../detectors/profile.js";
 import { readPackageJson } from "../parsers/package-json.js";
 import {
@@ -32,6 +33,10 @@ export async function buildRepositoryContext(
     dependencies,
     lockfiles,
     profile: detectProjectProfile(dependencies, packageJson),
+    packageManager: detectPackageManager(
+      packageJson?.packageManager,
+      lockfiles,
+    ),
   };
 }
 

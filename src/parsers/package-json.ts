@@ -6,6 +6,7 @@ export interface PackageJson {
   version: string | undefined;
   private: boolean | undefined;
   type: string | undefined;
+  packageManager: string | undefined;
   main: string | undefined;
   bin: string | Record<string, string> | undefined;
   exports: unknown;
@@ -44,6 +45,8 @@ export async function readPackageJson(
     version: typeof pkg.version === "string" ? pkg.version : undefined,
     private: typeof pkg.private === "boolean" ? pkg.private : undefined,
     type: typeof pkg.type === "string" ? pkg.type : undefined,
+    packageManager:
+      typeof pkg.packageManager === "string" ? pkg.packageManager : undefined,
     main: typeof pkg.main === "string" ? pkg.main : undefined,
     bin: isBinField(pkg.bin) ? pkg.bin : undefined,
     exports: pkg.exports,

@@ -8,6 +8,7 @@ function createPackageJson(overrides: Partial<PackageJson> = {}): PackageJson {
     version: undefined,
     private: undefined,
     type: undefined,
+    packageManager: undefined,
     main: undefined,
     bin: undefined,
     exports: undefined,

@@ -20,14 +20,16 @@ describe("buildRepositoryContext", () => {
     });
     expect(context.lockfiles).toEqual([]);
     expect(context.profile).toBe("generic");
+    expect(context.packageManager).toBe("unknown");
   });
 
-  it("detects present lockfiles", async () => {
+  it("detects present lockfiles and the matching package manager", async () => {
     const context = await buildRepositoryContext(
       path.join(fixturesDir, "pnpm-project"),
     );
 
     expect(context.lockfiles).toEqual(["pnpm-lock.yaml"]);
+    expect(context.packageManager).toBe("pnpm");
   });
 
   it("detects a Node.js CLI profile from the bin field", async () => {
