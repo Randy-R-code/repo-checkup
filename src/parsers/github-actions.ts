@@ -1,6 +1,6 @@
-import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { parse as parseYaml } from "yaml";
+import { safeReaddir, safeReadFile } from "../utils/safe-read.js";
 
 export interface WorkflowStep {
   run: string | undefined;
@@ -20,18 +20,13 @@ export interface Workflow {
 
 export async function readWorkflows(targetPath: string): Promise<Workflow[]> {
   const workflowsDir = path.join(targetPath, ".github", "workflows");
-
-  let entries: string[];
-  try {
-    entries = await readdir(workflowsDir);
-  } catch {
-    return [];
-  }
-
+  const entries = await safeReaddir(targetPath, workflowsDir);
   const fileNames = entries.filter((entry) => /\.ya?ml$/.test(entry));
 
   const workflows = await Promise.all(
-    fileNames.map((fileName) => readWorkflow(workflowsDir, fileName)),
+    fileNames.map((fileName) =>
+      readWorkflow(targetPath, workflowsDir, fileName),
+    ),
   );
 
   return workflows.filter(
@@ -40,13 +35,13 @@ export async function readWorkflows(targetPath: string): Promise<Workflow[]> {
 }
 
 async function readWorkflow(
+  targetPath: string,
   workflowsDir: string,
   fileName: string,
 ): Promise<Workflow | undefined> {
-  let raw: string;
-  try {
-    raw = await readFile(path.join(workflowsDir, fileName), "utf8");
-  } catch {
+  const raw = await safeReadFile(targetPath, path.join(workflowsDir, fileName));
+
+  if (raw === undefined) {
     return undefined;
   }
 

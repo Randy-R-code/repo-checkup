@@ -1,4 +1,4 @@
-import { mkdtemp } from "node:fs/promises";
+import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,5 +24,19 @@ describe("readPackageJson", () => {
     const pkg = await readPackageJson(dir);
 
     expect(pkg).toBeUndefined();
+  });
+
+  it("returns undefined for a malformed package.json instead of throwing", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-"));
+    await writeFile(path.join(dir, "package.json"), "{ not valid json", "utf8");
+
+    await expect(readPackageJson(dir)).resolves.toBeUndefined();
+  });
+
+  it("returns undefined when package.json is a JSON array, not an object", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-"));
+    await writeFile(path.join(dir, "package.json"), "[1, 2, 3]", "utf8");
+
+    await expect(readPackageJson(dir)).resolves.toBeUndefined();
   });
 });

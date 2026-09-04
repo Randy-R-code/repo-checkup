@@ -1,5 +1,5 @@
-import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { safeReadFile } from "../utils/safe-read.js";
 
 export interface PackageJson {
   name: string | undefined;
@@ -19,11 +19,9 @@ export async function readPackageJson(
   targetPath: string,
 ): Promise<PackageJson | undefined> {
   const filePath = path.join(targetPath, "package.json");
+  const raw = await safeReadFile(targetPath, filePath);
 
-  let raw: string;
-  try {
-    raw = await readFile(filePath, "utf8");
-  } catch {
+  if (raw === undefined) {
     return undefined;
   }
 
@@ -34,7 +32,7 @@ export async function readPackageJson(
     return undefined;
   }
 
-  if (typeof parsed !== "object" || parsed === null) {
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
     return undefined;
   }
 

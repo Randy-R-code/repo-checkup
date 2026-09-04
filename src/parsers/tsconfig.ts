@@ -1,6 +1,6 @@
 import { type ParseError, parse as parseJsonc } from "jsonc-parser";
-import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { safeReadFile } from "../utils/safe-read.js";
 
 export interface TsConfig {
   compilerOptions: {
@@ -15,11 +15,9 @@ export async function readTsConfig(
   targetPath: string,
 ): Promise<TsConfig | undefined> {
   const filePath = path.join(targetPath, "tsconfig.json");
+  const raw = await safeReadFile(targetPath, filePath);
 
-  let raw: string;
-  try {
-    raw = await readFile(filePath, "utf8");
-  } catch {
+  if (raw === undefined) {
     return undefined;
   }
 

@@ -96,6 +96,22 @@ describe("packageManagerFieldConsistency", () => {
 
     expect(packageManagerFieldConsistency.run(context).status).toBe("error");
   });
+
+  it("sanitizes an attacker-controlled packageManager value in the message (regression)", () => {
+    const esc = String.fromCharCode(27);
+    const malicious = `pnpm${esc}[31mFAKE${esc}[0m`;
+    const context = createContext({
+      packageJson: createPackageJson({
+        packageManager: `${malicious}@10.0.0`,
+      }),
+      lockfiles: ["yarn.lock"],
+    });
+
+    const result = packageManagerFieldConsistency.run(context);
+
+    expect(result.message).not.toContain(esc);
+    expect(result.message).toContain("pnpm [31mFAKE [0m");
+  });
 });
 
 describe("projectChecks", () => {

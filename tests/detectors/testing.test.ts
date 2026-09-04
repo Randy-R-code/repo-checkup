@@ -51,4 +51,22 @@ describe("detectTesting", () => {
 
     expect(testing.hasE2eTestFiles).toBe(true);
   });
+
+  it("bounds traversal depth instead of walking a pathologically deep tree", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-testing-"));
+
+    let deepDir = dir;
+    for (let level = 0; level < 40; level += 1) {
+      deepDir = path.join(deepDir, `level-${level}`);
+    }
+    await mkdir(deepDir, { recursive: true });
+    await writeFile(path.join(deepDir, "deep.test.ts"), "export {}", "utf8");
+
+    const start = Date.now();
+    const testing = await detectTesting(dir, {});
+    const duration = Date.now() - start;
+
+    expect(testing.hasTestFiles).toBe(false);
+    expect(duration).toBeLessThan(5000);
+  });
 });

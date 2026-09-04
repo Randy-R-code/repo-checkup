@@ -1,7 +1,7 @@
-import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { RepositoryHygieneEvidence } from "../types/repository.js";
 import { fileExists } from "../utils/fs.js";
+import { safeReadFile } from "../utils/safe-read.js";
 
 const README_FILES = ["README.md", "README"];
 const LICENSE_FILES = ["LICENSE", "LICENSE.md", "LICENSE.txt"];
@@ -46,10 +46,12 @@ async function anyFileExists(
 }
 
 async function gitignoreCoversEnv(targetPath: string): Promise<boolean> {
-  let raw: string;
-  try {
-    raw = await readFile(path.join(targetPath, ".gitignore"), "utf8");
-  } catch {
+  const raw = await safeReadFile(
+    targetPath,
+    path.join(targetPath, ".gitignore"),
+  );
+
+  if (raw === undefined) {
     return false;
   }
 

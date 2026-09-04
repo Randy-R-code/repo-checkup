@@ -1,4 +1,5 @@
 import type { Check, CheckResult, CheckStatus } from "../types/check.js";
+import { sanitizeForDisplay } from "../utils/sanitize.js";
 
 export function createResult(
   check: Pick<Check, "id" | "category" | "title" | "weight">,
@@ -12,7 +13,10 @@ export function createResult(
     status,
     title: check.title,
     weight: check.weight,
-    message,
-    recommendation,
+    message: message === undefined ? undefined : sanitizeForDisplay(message),
+    recommendation:
+      recommendation === undefined
+        ? undefined
+        : sanitizeForDisplay(recommendation),
   };
 }
