@@ -4,7 +4,7 @@ import {
   type PackageManager,
 } from "../types/package-manager.js";
 
-const LOCKFILE_PACKAGE_MANAGERS: Record<LockfileName, PackageManager> = {
+export const LOCKFILE_PACKAGE_MANAGERS: Record<LockfileName, PackageManager> = {
   "pnpm-lock.yaml": "pnpm",
   "package-lock.json": "npm",
   "yarn.lock": "yarn",

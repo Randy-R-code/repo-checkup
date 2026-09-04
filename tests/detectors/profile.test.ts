@@ -1,23 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { detectProjectProfile } from "../../src/detectors/profile.js";
-import type { PackageJson } from "../../src/parsers/package-json.js";
-
-function createPackageJson(overrides: Partial<PackageJson> = {}): PackageJson {
-  return {
-    name: undefined,
-    version: undefined,
-    private: undefined,
-    type: undefined,
-    packageManager: undefined,
-    main: undefined,
-    bin: undefined,
-    exports: undefined,
-    scripts: {},
-    dependencies: {},
-    devDependencies: {},
-    ...overrides,
-  };
-}
+import { createPackageJson } from "../helpers/package-json.js";
 
 describe("detectProjectProfile", () => {
   it("detects a Next.js application", () => {
