@@ -3,6 +3,7 @@ import type { PackageJson } from "../parsers/package-json.js";
 import type { TsConfig } from "../parsers/tsconfig.js";
 import type { PackageManager } from "./package-manager.js";
 import type { ProjectProfile } from "./profile.js";
+import type { RepositoryHygieneEvidence } from "./repository.js";
 import type { TestingEvidence } from "./testing.js";
 import type { ToolingEvidence } from "./tooling.js";
 
@@ -29,4 +30,5 @@ export interface RepositoryContext {
   tooling: ToolingEvidence;
   testing: TestingEvidence;
   githubActionsWorkflows: Workflow[];
+  repository: RepositoryHygieneEvidence;
 }

@@ -27,6 +27,14 @@ export function createContext(
       hasE2eTestFiles: false,
     },
     githubActionsWorkflows: [],
+    repository: {
+      hasReadme: false,
+      hasLicense: false,
+      hasGitignore: false,
+      gitignoreCoversEnvFiles: false,
+      hasEnvFile: false,
+      hasEnvExample: false,
+    },
     ...overrides,
   };
 }

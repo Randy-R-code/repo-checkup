@@ -2,6 +2,7 @@ import { stat } from "node:fs/promises";
 import path from "node:path";
 import { detectPackageManager } from "../detectors/package-manager.js";
 import { detectProjectProfile } from "../detectors/profile.js";
+import { detectRepositoryHygiene } from "../detectors/repository.js";
 import { detectTesting } from "../detectors/testing.js";
 import { detectTooling } from "../detectors/tooling.js";
 import { readWorkflows } from "../parsers/github-actions.js";
@@ -37,6 +38,7 @@ export async function buildRepositoryContext(
   const tooling = await detectTooling(resolvedPath, dependencies);
   const testing = await detectTesting(resolvedPath, dependencies);
   const githubActionsWorkflows = await readWorkflows(resolvedPath);
+  const repository = await detectRepositoryHygiene(resolvedPath);
 
   return {
     targetPath: resolvedPath,
@@ -54,6 +56,7 @@ export async function buildRepositoryContext(
     tooling,
     testing,
     githubActionsWorkflows,
+    repository,
   };
 }
 
