@@ -1,4 +1,5 @@
 import type { PackageJson } from "../parsers/package-json.js";
+import type { ProjectProfile } from "./profile.js";
 
 export const LOCKFILES = [
   "pnpm-lock.yaml",
@@ -16,4 +17,5 @@ export interface RepositoryContext {
   scripts: Record<string, string>;
   dependencies: Record<string, string>;
   lockfiles: LockfileName[];
+  profile: ProjectProfile;
 }

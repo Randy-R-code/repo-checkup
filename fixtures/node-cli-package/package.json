@@ -1,0 +1,7 @@
+{
+  "name": "cli-fixture",
+  "version": "1.0.0",
+  "bin": {
+    "cli-fixture": "./dist/cli.js"
+  }
+}

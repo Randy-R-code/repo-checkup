@@ -1,5 +1,6 @@
 import { stat } from "node:fs/promises";
 import path from "node:path";
+import { detectProjectProfile } from "../detectors/profile.js";
 import { readPackageJson } from "../parsers/package-json.js";
 import {
   LOCKFILES,
@@ -19,16 +20,18 @@ export async function buildRepositoryContext(
 
   const packageJson = await readPackageJson(resolvedPath);
   const lockfiles = await findLockfiles(resolvedPath);
+  const dependencies = {
+    ...packageJson?.dependencies,
+    ...packageJson?.devDependencies,
+  };
 
   return {
     targetPath: resolvedPath,
     packageJson,
     scripts: packageJson?.scripts ?? {},
-    dependencies: {
-      ...packageJson?.dependencies,
-      ...packageJson?.devDependencies,
-    },
+    dependencies,
     lockfiles,
+    profile: detectProjectProfile(dependencies, packageJson),
   };
 }
 
