@@ -105,7 +105,7 @@ The score is a summary, not the product — the useful output is the list of fin
 
 ```json
 {
-  "version": "0.1.3",
+  "version": "0.1.4",
   "target": "/path/to/your-project",
   "context": {
     "profile": "node-cli",

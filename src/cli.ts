@@ -1,16 +1,25 @@
 #!/usr/bin/env node
 import cac from "cac";
-import { realpathSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { analyze } from "./core/analyzer.js";
 import { createJsonReport } from "./reporters/json.js";
 import { renderTerminalReport } from "./reporters/terminal.js";
 import { CATEGORIES, type Category } from "./types/category.js";
 
+// package.json sits one directory above this file both in source
+// (src/cli.ts) and in the tsdown bundle (dist/cli.js), and npm always
+// includes package.json in the published tarball even though "files"
+// only lists "dist" — so this relative lookup resolves in dev, in the
+// build, and once installed from npm.
+const packageJson = JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+) as { version: string };
+
 export function getCliMeta() {
   return {
     name: "RepoCheckup",
-    version: "0.1.1",
+    version: packageJson.version,
     tagline: "Give your JavaScript or TypeScript repository a quick checkup.",
   };
 }

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { mkdtemp, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -6,11 +7,14 @@ import { describe, expect, it } from "vitest";
 import { getCliMeta, isMainModule } from "../src/cli.js";
 
 describe("getCliMeta", () => {
-  it("returns the RepoCheckup CLI metadata", () => {
+  it("returns the RepoCheckup CLI metadata, with the version read from package.json", () => {
     const meta = getCliMeta();
+    const packageJson = JSON.parse(
+      readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+    ) as { version: string };
 
     expect(meta.name).toBe("RepoCheckup");
-    expect(meta.version).toBe("0.1.1");
+    expect(meta.version).toBe(packageJson.version);
     expect(meta.tagline).toBe(
       "Give your JavaScript or TypeScript repository a quick checkup.",
     );
