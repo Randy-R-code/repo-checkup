@@ -32,4 +32,15 @@ jobs:
       - run: pnpm build
       - run: node dist/cli.js --ci
 
+      - name: Check whether this version is already published
+        id: check
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if npm view "repo-checkup@$PKG_VERSION" version >/dev/null 2>&1; then
+            echo "already-published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "already-published=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - run: npm publish --provenance --access public
+        if: steps.check.outputs.already-published == 'false'
