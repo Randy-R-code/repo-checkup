@@ -30,6 +30,7 @@
     "testing"
   ],
   "license": "MIT",
+  "author": "Randy-R-code <randy.rimbault@myyahoo.com> (https://github.com/Randy-R-code)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Randy-R-code/repo-checkup.git"
