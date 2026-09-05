@@ -33,7 +33,7 @@ Checking /path/to/your-project...
 Detected
 Node.js CLI · TypeScript · pnpm · Vitest
 
-Project        4/4
+Project        5/5
 TypeScript     5/5
 Tooling        1/1
 Testing        3/3
@@ -49,7 +49,7 @@ Issues
   Add a workflow that installs dependencies and runs lint, typecheck, tests, and build.
 
 Summary
-✓ 16 passed  ! 1 recommendations  ✗ 0 issues
+✓ 17 passed  ! 1 recommendations  ✗ 0 issues
 
 Health 97/100
 ```
@@ -58,7 +58,7 @@ Health 97/100
 
 Checks are grouped into six categories. Every check only runs when it's actually applicable to the detected project (for example, TypeScript checks are skipped entirely for a plain JavaScript repository).
 
-- **Project** — `package.json` validity, package manager detection, conflicting lockfiles, `packageManager` field consistency.
+- **Project** — `package.json` validity, package manager detection, conflicting lockfiles, `packageManager` field consistency, an `engines.node` field.
 - **TypeScript** — `tsconfig.json` presence and validity, strict mode, the `typescript` package being installed, a typecheck script.
 - **Tooling** — ESLint / Biome / Prettier installed-vs-configured consistency, overlapping linters.
 - **Testing** — a test runner detected, a `test` script, actual test files, end-to-end tests when an e2e tool is installed.
@@ -105,7 +105,7 @@ The score is a summary, not the product — the useful output is the list of fin
 
 ```json
 {
-  "version": "0.1.2",
+  "version": "0.1.3",
   "target": "/path/to/your-project",
   "context": {
     "profile": "node-cli",

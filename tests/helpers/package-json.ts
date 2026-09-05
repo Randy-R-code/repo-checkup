@@ -12,6 +12,7 @@ export function createPackageJson(
     main: undefined,
     bin: undefined,
     exports: undefined,
+    engines: {},
     scripts: {},
     dependencies: {},
     devDependencies: {},

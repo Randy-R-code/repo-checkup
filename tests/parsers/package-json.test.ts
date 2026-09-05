@@ -16,6 +16,7 @@ describe("readPackageJson", () => {
     expect(pkg?.scripts).toEqual({ build: "tsc" });
     expect(pkg?.dependencies).toEqual({ cac: "^7.0.0" });
     expect(pkg?.devDependencies).toEqual({ typescript: "^5.0.0" });
+    expect(pkg?.engines).toEqual({});
   });
 
   it("returns undefined when package.json is missing", async () => {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   conflictingLockfiles,
+  enginesFieldDeclared,
   packageJsonFound,
   packageManagerDetected,
   packageManagerFieldConsistency,
@@ -114,8 +115,29 @@ describe("packageManagerFieldConsistency", () => {
   });
 });
 
+describe("enginesFieldDeclared", () => {
+  it("does not apply without a package.json", () => {
+    expect(enginesFieldDeclared.applies(createContext())).toBe(false);
+  });
+
+  it("warns when engines.node is missing", () => {
+    const context = createContext({ packageJson: createPackageJson({}) });
+
+    expect(enginesFieldDeclared.applies(context)).toBe(true);
+    expect(enginesFieldDeclared.run(context).status).toBe("warning");
+  });
+
+  it("passes when engines.node is declared", () => {
+    const context = createContext({
+      packageJson: createPackageJson({ engines: { node: ">=22" } }),
+    });
+
+    expect(enginesFieldDeclared.run(context).status).toBe("pass");
+  });
+});
+
 describe("projectChecks", () => {
   it("exposes every project check", () => {
-    expect(projectChecks).toHaveLength(4);
+    expect(projectChecks).toHaveLength(5);
   });
 });

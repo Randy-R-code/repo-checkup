@@ -92,9 +92,30 @@ export const packageManagerFieldConsistency: Check = {
   },
 };
 
+export const enginesFieldDeclared: Check = {
+  id: "project/engines-field-declared",
+  category: "project",
+  title: "engines.node is declared",
+  weight: 2,
+  applies: (context) => context.packageJson !== undefined,
+  run: (context) => {
+    if (context.packageJson?.engines.node === undefined) {
+      return createResult(
+        enginesFieldDeclared,
+        "warning",
+        "No engines.node field was found in package.json.",
+        'Add an engines.node field (e.g. ">=22") so contributors and CI use a consistent Node.js version.',
+      );
+    }
+
+    return createResult(enginesFieldDeclared, "pass");
+  },
+};
+
 export const projectChecks: Check[] = [
   packageJsonFound,
   packageManagerDetected,
   conflictingLockfiles,
   packageManagerFieldConsistency,
+  enginesFieldDeclared,
 ];

@@ -10,6 +10,7 @@ export interface PackageJson {
   main: string | undefined;
   bin: string | Record<string, string> | undefined;
   exports: unknown;
+  engines: Record<string, string>;
   scripts: Record<string, string>;
   dependencies: Record<string, string>;
   devDependencies: Record<string, string>;
@@ -48,6 +49,7 @@ export async function readPackageJson(
     main: typeof pkg.main === "string" ? pkg.main : undefined,
     bin: isBinField(pkg.bin) ? pkg.bin : undefined,
     exports: pkg.exports,
+    engines: isStringRecord(pkg.engines) ? pkg.engines : {},
     scripts: isStringRecord(pkg.scripts) ? pkg.scripts : {},
     dependencies: isStringRecord(pkg.dependencies) ? pkg.dependencies : {},
     devDependencies: isStringRecord(pkg.devDependencies)
