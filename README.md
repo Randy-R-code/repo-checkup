@@ -1,26 +1,27 @@
 # RepoCheckup
 
+[![npm version](https://img.shields.io/npm/v/repo-checkup.svg)](https://www.npmjs.com/package/repo-checkup)
+[![CI](https://github.com/Randy-R-code/repo-checkup/actions/workflows/ci.yml/badge.svg)](https://github.com/Randy-R-code/repo-checkup/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/repo-checkup.svg)](LICENSE)
+
 > Give your JavaScript or TypeScript repository a quick checkup.
 
 RepoCheckup is a zero-config CLI that checks JavaScript and TypeScript repositories for configuration, tooling, testing, CI, and project health. It doesn't replace ESLint, TypeScript, or your test runner — it looks at how they're wired together and points out what an experienced reviewer would notice on a first pass.
 
 ## Quick start
 
-RepoCheckup isn't published on npm yet. The intended usage once it is:
-
 ```bash
 npx repo-checkup
 ```
 
-Until then, run it from source:
+Or install it globally:
 
 ```bash
-git clone <repository-url>
-cd repo-checkup
-pnpm install
-pnpm build
-node dist/cli.js /path/to/your/project
+npm install -g repo-checkup
+repo-checkup
 ```
+
+Requires Node.js >= 22.
 
 ## Example output
 
@@ -104,7 +105,7 @@ The score is a summary, not the product — the useful output is the list of fin
 
 ```json
 {
-  "version": "0.1.0",
+  "version": "0.1.2",
   "target": "/path/to/your-project",
   "context": {
     "profile": "node-cli",
@@ -142,12 +143,16 @@ RepoCheckup is not a linter, a vulnerability scanner, a secret scanner, or a SAS
 ## Development
 
 ```bash
+git clone https://github.com/Randy-R-code/repo-checkup.git
+cd repo-checkup
 pnpm install
 pnpm dev         # run the CLI from source
 pnpm typecheck
 pnpm test
 pnpm build
 ```
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
