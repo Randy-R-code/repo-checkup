@@ -44,6 +44,7 @@ describe("renderTerminalReport", () => {
             mocha: { installed: false },
             playwright: { installed: false },
             cypress: { installed: false },
+            nodeTest: { detected: false },
             hasTestFiles: true,
             hasE2eTestFiles: false,
           },

@@ -13,6 +13,7 @@ const emptyTsConfig = {
   compilerOptions: { strict: undefined, noUncheckedIndexedAccess: undefined },
   include: undefined,
   exclude: undefined,
+  hasUnresolvedExtends: false,
 };
 
 describe("category applicability", () => {
@@ -91,6 +92,27 @@ describe("strictMode", () => {
       },
     });
 
+    expect(strictMode.run(context).status).toBe("pass");
+  });
+
+  it("does not apply when strict is unknown because of an unresolved extends chain", () => {
+    const context = createContext({
+      tsconfig: { ...emptyTsConfig, hasUnresolvedExtends: true },
+    });
+
+    expect(strictMode.applies(context)).toBe(false);
+  });
+
+  it("still applies when strict is explicitly known despite an unresolved extends chain", () => {
+    const context = createContext({
+      tsconfig: {
+        ...emptyTsConfig,
+        compilerOptions: { ...emptyTsConfig.compilerOptions, strict: true },
+        hasUnresolvedExtends: true,
+      },
+    });
+
+    expect(strictMode.applies(context)).toBe(true);
     expect(strictMode.run(context).status).toBe("pass");
   });
 });

@@ -25,6 +25,7 @@ export function createContext(
       mocha: { installed: false },
       playwright: { installed: false },
       cypress: { installed: false },
+      nodeTest: { detected: false },
       hasTestFiles: false,
       hasE2eTestFiles: false,
     },

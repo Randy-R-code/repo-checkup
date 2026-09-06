@@ -71,10 +71,26 @@ export const prettierConsistency = createToolConsistencyCheck(
   (context) => context.tooling.prettier,
 );
 
+const ESLINT_LINT_INVOCATION = /\beslint\b/;
+const BIOME_LINT_INVOCATION = /\bbiome\s+(?:lint|check)\b/;
+
+/**
+ * Using ESLint and Biome together isn't inherently wrong (e.g. ESLint for
+ * linting, Biome only for formatting). Only flag it when a package.json
+ * script shows both actually being used for linting, since that's real
+ * overlapping responsibility rather than a legitimate split.
+ */
+function usedForLinting(
+  scripts: Record<string, string>,
+  pattern: RegExp,
+): boolean {
+  return Object.values(scripts).some((script) => pattern.test(script));
+}
+
 export const overlappingLinters: Check = {
   id: "tooling/overlapping-linters",
   category: "tooling",
-  title: "No overlapping lint/format tools",
+  title: "No overlapping lint responsibilities between ESLint and Biome",
   weight: 2,
   applies: () => true,
   run: (context) => {
@@ -83,12 +99,18 @@ export const overlappingLinters: Check = {
     const biomePresent =
       context.tooling.biome.installed || context.tooling.biome.configured;
 
-    if (eslintPresent && biomePresent) {
+    const bothUsedForLinting =
+      eslintPresent &&
+      biomePresent &&
+      usedForLinting(context.scripts, ESLINT_LINT_INVOCATION) &&
+      usedForLinting(context.scripts, BIOME_LINT_INVOCATION);
+
+    if (bothUsedForLinting) {
       return createResult(
         overlappingLinters,
         "warning",
-        "Both ESLint and Biome appear to be set up in this repository.",
-        "Standardize on a single linter/formatter to avoid contradictory rules and redundant tooling.",
+        "Both ESLint and Biome are used for linting in package.json scripts.",
+        "Standardize on a single linter to avoid contradictory rules and redundant tooling.",
       );
     }
 

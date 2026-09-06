@@ -36,7 +36,11 @@ export async function buildRepositoryContext(
   );
   const tsconfig = await readTsConfig(resolvedPath);
   const tooling = await detectTooling(resolvedPath, dependencies);
-  const testing = await detectTesting(resolvedPath, dependencies);
+  const testing = await detectTesting(
+    resolvedPath,
+    dependencies,
+    packageJson?.scripts ?? {},
+  );
   const githubActionsWorkflows = await readWorkflows(resolvedPath);
   const repository = await detectRepositoryHygiene(resolvedPath);
 

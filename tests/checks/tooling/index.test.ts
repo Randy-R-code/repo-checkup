@@ -68,6 +68,12 @@ describe("biomeConsistency and prettierConsistency", () => {
 });
 
 describe("overlappingLinters", () => {
+  const bothPresent = {
+    eslint: { installed: true, configured: true },
+    biome: { installed: true, configured: true },
+    prettier: { installed: false, configured: false },
+  };
+
   it("passes when only Biome is set up", () => {
     const context = createContext({
       tooling: {
@@ -80,16 +86,57 @@ describe("overlappingLinters", () => {
     expect(overlappingLinters.run(context).status).toBe("pass");
   });
 
-  it("warns when both ESLint and Biome are set up", () => {
+  it("passes when only ESLint is set up", () => {
     const context = createContext({
       tooling: {
         eslint: { installed: true, configured: true },
-        biome: { installed: true, configured: true },
+        biome: { installed: false, configured: false },
         prettier: { installed: false, configured: false },
       },
     });
 
+    expect(overlappingLinters.run(context).status).toBe("pass");
+  });
+
+  it("passes when ESLint lints and Biome only formats (legitimate split)", () => {
+    const context = createContext({
+      tooling: bothPresent,
+      scripts: {
+        lint: "eslint .",
+        format: "biome format --write .",
+      },
+    });
+
+    expect(overlappingLinters.run(context).status).toBe("pass");
+  });
+
+  it("warns when ESLint and Biome both lint", () => {
+    const context = createContext({
+      tooling: bothPresent,
+      scripts: {
+        lint: "eslint . && biome lint .",
+      },
+    });
+
     expect(overlappingLinters.run(context).status).toBe("warning");
+  });
+
+  it("warns when Biome's check command overlaps with ESLint linting", () => {
+    const context = createContext({
+      tooling: bothPresent,
+      scripts: {
+        lint: "eslint .",
+        check: "biome check .",
+      },
+    });
+
+    expect(overlappingLinters.run(context).status).toBe("warning");
+  });
+
+  it("passes when both are installed but there is no script evidence of overlap", () => {
+    const context = createContext({ tooling: bothPresent });
+
+    expect(overlappingLinters.run(context).status).toBe("pass");
   });
 });
 

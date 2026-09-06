@@ -71,6 +71,42 @@ describe("detectTesting", () => {
     expect(testing.hasE2eTestFiles).toBe(true);
   });
 
+  it("detects Node's built-in test runner from a script", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-testing-"));
+
+    const testing = await detectTesting(dir, {}, { test: "node --test" });
+
+    expect(testing.nodeTest.detected).toBe(true);
+  });
+
+  it("detects node --test with extra arguments and flags", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-testing-"));
+
+    expect(
+      (await detectTesting(dir, {}, { test: "node --test tests" })).nodeTest
+        .detected,
+    ).toBe(true);
+    expect(
+      (
+        await detectTesting(
+          dir,
+          {},
+          {
+            test: "node --test --test-reporter=spec",
+          },
+        )
+      ).nodeTest.detected,
+    ).toBe(true);
+  });
+
+  it("does not detect an ordinary node command as a test runner", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-testing-"));
+
+    const testing = await detectTesting(dir, {}, { start: "node server.js" });
+
+    expect(testing.nodeTest.detected).toBe(false);
+  });
+
   it("bounds traversal depth instead of walking a pathologically deep tree", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "repo-checkup-testing-"));
 

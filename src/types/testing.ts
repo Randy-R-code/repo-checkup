@@ -5,6 +5,7 @@ export interface TestingEvidence {
   mocha: { installed: boolean };
   playwright: { installed: boolean };
   cypress: { installed: boolean };
+  nodeTest: { detected: boolean };
   hasTestFiles: boolean;
   hasE2eTestFiles: boolean;
 }

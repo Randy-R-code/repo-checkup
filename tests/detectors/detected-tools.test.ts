@@ -16,6 +16,7 @@ describe("detectDetectedTools", () => {
         mocha: { installed: false },
         playwright: { installed: true },
         cypress: { installed: false },
+        nodeTest: { detected: false },
         hasTestFiles: true,
         hasE2eTestFiles: false,
       },

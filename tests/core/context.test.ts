@@ -35,6 +35,15 @@ describe("buildRepositoryContext", () => {
     expect(context.tsconfig?.include).toEqual(["src"]);
   });
 
+  it("resolves inherited compiler options through an extends chain", async () => {
+    const context = await buildRepositoryContext(
+      path.join(fixturesDir, "tsconfig-extends-project"),
+    );
+
+    expect(context.tsconfig?.compilerOptions.strict).toBe(true);
+    expect(context.tsconfig?.hasUnresolvedExtends).toBe(false);
+  });
+
   it("detects present lockfiles and the matching package manager", async () => {
     const context = await buildRepositoryContext(
       path.join(fixturesDir, "pnpm-project"),

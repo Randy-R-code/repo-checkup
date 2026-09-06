@@ -51,7 +51,16 @@ export const strictMode: Check = {
   category: "typescript",
   title: "TypeScript strict mode is enabled",
   weight: 3,
-  applies: (context) => context.tsconfig !== undefined,
+  applies: (context) =>
+    context.tsconfig !== undefined &&
+    // When strict isn't set on the resolved config and part of the
+    // `extends` chain couldn't be resolved (a package preset, a cycle, a
+    // missing file), we can't tell whether it's inherited from there.
+    // Skip rather than report a false "not enabled".
+    !(
+      context.tsconfig.compilerOptions.strict === undefined &&
+      context.tsconfig.hasUnresolvedExtends
+    ),
   run: (context) => {
     if (context.tsconfig?.compilerOptions.strict !== true) {
       return createResult(

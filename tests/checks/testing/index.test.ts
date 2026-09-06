@@ -22,6 +22,25 @@ describe("testRunnerDetected", () => {
         mocha: { installed: false },
         playwright: { installed: false },
         cypress: { installed: false },
+        nodeTest: { detected: false },
+        hasTestFiles: false,
+        hasE2eTestFiles: false,
+      },
+    });
+
+    expect(testRunnerDetected.run(context).status).toBe("pass");
+  });
+
+  it("passes when Node's built-in test runner is detected", () => {
+    const context = createContext({
+      testing: {
+        vitest: { installed: false },
+        jest: { installed: false },
+        ava: { installed: false },
+        mocha: { installed: false },
+        playwright: { installed: false },
+        cypress: { installed: false },
+        nodeTest: { detected: true },
         hasTestFiles: false,
         hasE2eTestFiles: false,
       },
@@ -39,6 +58,7 @@ describe("testScript", () => {
     mocha: { installed: false },
     playwright: { installed: false },
     cypress: { installed: false },
+    nodeTest: { detected: false },
     hasTestFiles: false,
     hasE2eTestFiles: false,
   };
@@ -73,6 +93,7 @@ describe("testFilesPresent", () => {
         mocha: { installed: false },
         playwright: { installed: false },
         cypress: { installed: false },
+        nodeTest: { detected: false },
         hasTestFiles: false,
         hasE2eTestFiles: false,
       },
@@ -90,6 +111,7 @@ describe("testFilesPresent", () => {
         mocha: { installed: false },
         playwright: { installed: false },
         cypress: { installed: false },
+        nodeTest: { detected: false },
         hasTestFiles: true,
         hasE2eTestFiles: false,
       },
@@ -113,6 +135,7 @@ describe("e2eTestsPresent", () => {
         mocha: { installed: false },
         playwright: { installed: true },
         cypress: { installed: false },
+        nodeTest: { detected: false },
         hasTestFiles: false,
         hasE2eTestFiles: false,
       },
@@ -130,6 +153,7 @@ describe("e2eTestsPresent", () => {
         mocha: { installed: false },
         playwright: { installed: true },
         cypress: { installed: false },
+        nodeTest: { detected: false },
         hasTestFiles: false,
         hasE2eTestFiles: true,
       },

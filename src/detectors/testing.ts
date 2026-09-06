@@ -34,9 +34,29 @@ const E2E_FILE_PATTERNS = [
 // beyond any realistic (even monorepo) source layout.
 const MAX_TRAVERSAL_DEPTH = 30;
 
+const SHELL_COMMAND_SEPARATOR = /&&|\|\||[;|]/;
+
+/**
+ * Detects Node's built-in test runner (`node --test`) as a script command.
+ * Node ships this runner, so unlike Vitest/Jest/AVA/Mocha it never appears
+ * as a dependency. Kept conservative: only a script whose first token is
+ * literally `node` and which passes `--test` as its own argument counts,
+ * so an unrelated `node server.js` or a `--test-reporter=...` flag alone
+ * doesn't.
+ */
+function usesNodeTestRunner(scripts: Record<string, string>): boolean {
+  return Object.values(scripts).some((script) =>
+    script.split(SHELL_COMMAND_SEPARATOR).some((segment) => {
+      const tokens = segment.trim().split(/\s+/);
+      return tokens[0] === "node" && tokens.includes("--test");
+    }),
+  );
+}
+
 export async function detectTesting(
   targetPath: string,
   dependencies: Record<string, string>,
+  scripts: Record<string, string> = {},
 ): Promise<TestingEvidence> {
   const [testFiles, e2eFiles] = await Promise.all([
     glob(TEST_FILE_PATTERNS, {
@@ -65,6 +85,7 @@ export async function detectTesting(
         "@playwright/test" in dependencies || "playwright" in dependencies,
     },
     cypress: { installed: "cypress" in dependencies },
+    nodeTest: { detected: usesNodeTestRunner(scripts) },
     hasTestFiles: testFiles.length > 0,
     hasE2eTestFiles: e2eFiles.length > 0,
   };

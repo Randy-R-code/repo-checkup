@@ -7,7 +7,8 @@ function hasUnitTestRunner(context: RepositoryContext): boolean {
     context.testing.vitest.installed ||
     context.testing.jest.installed ||
     context.testing.ava.installed ||
-    context.testing.mocha.installed
+    context.testing.mocha.installed ||
+    context.testing.nodeTest.detected
   );
 }
 
@@ -22,8 +23,8 @@ export const testRunnerDetected: Check = {
       return createResult(
         testRunnerDetected,
         "warning",
-        "No known test runner (Vitest, Jest, AVA, or Mocha) was found as a dependency.",
-        "Add a test runner such as Vitest so the project's behavior can be verified automatically.",
+        "No known test runner (Vitest, Jest, AVA, Mocha, or Node's built-in test runner) was found.",
+        "Add a test runner such as Vitest, or use `node --test`, so the project's behavior can be verified automatically.",
       );
     }
 

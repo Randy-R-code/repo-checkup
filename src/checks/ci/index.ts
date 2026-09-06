@@ -4,16 +4,31 @@ import { createResult } from "../helpers.js";
 
 const PACKAGE_MANAGER_BINARIES = ["npm", "pnpm", "yarn", "bun"];
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Matches an exact script invocation (`pm run <script>` or `pm <script>`),
+ * not a prefix of it, so a check for "test" doesn't also match "test:unit"
+ * or "test:e2e" the way a plain `.includes()` would.
+ */
 function scriptCommandReferences(
   commandOrScriptValue: string,
   scriptName: string,
 ): boolean {
+  const escapedScriptName = escapeRegExp(scriptName);
+  const boundary = String.raw`(?:$|[\s;&|])`;
   const patterns = PACKAGE_MANAGER_BINARIES.flatMap((pm) => [
-    `${pm} run ${scriptName}`,
-    `${pm} ${scriptName}`,
+    new RegExp(
+      String.raw`(?:^|[\s;&|])${pm}\s+run\s+${escapedScriptName}${boundary}`,
+    ),
+    new RegExp(
+      String.raw`(?:^|[\s;&|])${pm}\s+${escapedScriptName}${boundary}`,
+    ),
   ]);
 
-  return patterns.some((pattern) => commandOrScriptValue.includes(pattern));
+  return patterns.some((pattern) => pattern.test(commandOrScriptValue));
 }
 
 function isScriptDirectlyInvokedInCi(

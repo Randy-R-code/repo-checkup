@@ -234,6 +234,78 @@ describe("compound script resolution (real-world regressions)", () => {
   });
 });
 
+describe("exact script matching (real-world regression: substring false positives)", () => {
+  it("does not treat `npm run test:unit` in CI as running the `test` script", () => {
+    const context = createContext({
+      scripts: { test: "vitest run", "test:unit": "vitest run unit" },
+      githubActionsWorkflows: [
+        createWorkflow({
+          jobs: {
+            build: { steps: [{ run: "npm run test:unit", uses: undefined }] },
+          },
+        }),
+      ],
+    });
+
+    expect(testsInCi.run(context).status).toBe("error");
+  });
+
+  it("does not treat `pnpm test:e2e` in CI as running the `test` script", () => {
+    const context = createContext({
+      scripts: { test: "vitest run", "test:e2e": "playwright test" },
+      githubActionsWorkflows: [
+        createWorkflow({
+          jobs: {
+            build: { steps: [{ run: "pnpm test:e2e", uses: undefined }] },
+          },
+        }),
+      ],
+    });
+
+    expect(testsInCi.run(context).status).toBe("error");
+  });
+
+  it("still matches `npm run test` exactly", () => {
+    const context = createContext({
+      scripts: { test: "vitest run", "test:unit": "vitest run unit" },
+      githubActionsWorkflows: [
+        createWorkflow({
+          jobs: {
+            build: { steps: [{ run: "npm run test", uses: undefined }] },
+          },
+        }),
+      ],
+    });
+
+    expect(testsInCi.run(context).status).toBe("pass");
+  });
+
+  it("matches the target script within a chained CI step", () => {
+    const context = createContext({
+      scripts: {
+        test: "vitest run",
+        "test:unit": "vitest run unit",
+      },
+      githubActionsWorkflows: [
+        createWorkflow({
+          jobs: {
+            build: {
+              steps: [
+                {
+                  run: "npm run lint && npm run test",
+                  uses: undefined,
+                },
+              ],
+            },
+          },
+        }),
+      ],
+    });
+
+    expect(testsInCi.run(context).status).toBe("pass");
+  });
+});
+
 describe("ciChecks", () => {
   it("exposes every ci check", () => {
     expect(ciChecks).toHaveLength(5);
